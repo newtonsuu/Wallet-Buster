@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dynamic Wishlist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #1f2937;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .total-row td {
+            font-weight: 700;
+            background-color: #e0f2fe; /* Light blue for totals */
+        }
+        .interest-select {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            font-size: 0.875rem;
+            color: #4b5563;
+            width: 100%;
+        }
+        .main-menu-card {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .main-menu-card h2 {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 1rem;
+        }
+        .main-menu-card table th, .main-menu-card table td {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .main-menu-card .total-row td {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+        }
+        .btn:hover {
+            background-color: #4338ca;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-group label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .input-group input[type="text"] {
+            flex-grow: 1;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">My Comprehensive Wishlist</h1>
+
+        <!-- Main Menu Section -->
+        <div id="main-menu" class="card main-menu-card">
+            <h2 class="text-2xl font-bold mb-4">Main Menu - Totals Overview</h2>
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left py-2">Category</th>
+                        <th class="text-right py-2">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Pants Wishlist</td><td id="total-pants" class="text-right">₱0.00</td></tr>
+                    <tr><td>Upper Wear Wishlist</td><td id="total-upper-wear" class="text-right">₱0.00</td></tr>
+                    <tr><td>Shoes Wishlist</td><td id="total-shoes" class="text-right">₱0.00</td></tr>
+                    <tr><td>Perfume Wishlist</td><td id="total-perfume" class="text-right">₱0.00</td></tr>
+                    <tr><td>Electronics Wishlist</td><td id="total-electronics" class="text-right">₱0.00</td></tr>
+                    <tr class="total-row"><td>Grand Total</td><td id="grand-total" class="text-right">₱0.00</td></tr>
+                </tbody>
+            </table>
+
+            <div class="action-buttons mt-6">
+                <div class="input-group">
+                    <label for="column-table-id" class="text-white">Table ID:</label>
+                    <input type="text" id="column-table-id" placeholder="e.g., pants-table" class="p-2 rounded">
+                    <label for="new-column-name" class="text-white">Column Name:</label>
+                    <input type="text" id="new-column-name" placeholder="e.g., Availability" class="p-2 rounded">
+                    <button onclick="addNewColumn()" class="btn">Add Custom Column</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pants Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Pants Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('pants-table', 'Pants')" class="btn">Add New Item</button>
+            </div>
+            <table id="pants-table">
+                <thead>
+                    <tr>
+                        <th>Brand Name</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>Material</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Needles</td>
+                        <td contenteditable="true" class="model-name">Track Pants</td>
+                        <td contenteditable="true" class="price">₱18,000</td>
+                        <td contenteditable="true">Polyester</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td>Levi's</td>
+                        <td contenteditable="true" class="model-name">568 Workwear</td>
+                        <td contenteditable="true" class="price">₱3,500</td>
+                        <td contenteditable="true">Cotton/Canvas</td>
+                        <td contenteditable="true">White</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td>Levi's</td>
+                        <td contenteditable="true" class="model-name">578</td>
+                        <td contenteditable="true" class="price">₱2,500</td>
+                        <td contenteditable="true">Denim</td>
+                        <td contenteditable="true">Light Wash</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low" selected>Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td>ONI Denim</td>
+                        <td contenteditable="true" class="model-name">200ZR-KAB "Secret Denim Kabuki Selvedge" 20oz Wide Straight Jeans</td>
+                        <td contenteditable="true" class="price">₱15,500.00</td>
+                        <td contenteditable="true">Denim</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Upper Wear Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Upper Wear Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('upper-wear-table', 'Upper Wear')" class="btn">Add New Item</button>
+            </div>
+            <table id="upper-wear-table">
+                <thead>
+                    <tr>
+                        <th>Brand Name</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>Type (e.g., Shirt, Jacket)</th>
+                        <th>Material</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">A BATHING APE</td>
+                        <td contenteditable="true" class="model-name">Marbling Camo Shark Relaxed Fit Full Zip Hoodie</td>
+                        <td contenteditable="true" class="price">₱34,800.00</td>
+                        <td contenteditable="true">Cotton Fleece</td>
+                        <td contenteditable="true">Black</td>
+                        <td contenteditable="true">XS, S, L, XL</td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">adidas</td>
+                        <td contenteditable="true" class="model-name">BAPE x adidas Ultimate Shark Hoodie</td>
+                        <td contenteditable="true" class="price">₱11,000</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true">Black</td>
+                        <td contenteditable="true">XS, S, L, XL</td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Levi's</td>
+                        <td contenteditable="true" class="model-name">Men’s Sunset Camp Shirt</td>
+                        <td contenteditable="true" class="price">₱2,699</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low" selected>Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                     <tr>
+                        <td contenteditable="true">Nike</td>
+                        <td contenteditable="true" class="model-name">Shohei Ohtani Los Angeles Dodgers Men's MLB Replica Jersey</td>
+                        <td contenteditable="true" class="price">₱7,500</td>
+                        <td contenteditable="true">Jersey</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true">US Men's</td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Shoes Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Shoes Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('shoes-table', 'Shoes')" class="btn">Add New Item</button>
+            </div>
+            <table id="shoes-table">
+                <thead>
+                    <tr>
+                        <th>Brand Name</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>Type (e.g., Sneakers, Boots)</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">Maison Margiela</td>
+                        <td contenteditable="true" class="model-name">GATs Replica</td>
+                        <td contenteditable="true" class="price">₱43,000 (Japan)</td>
+                        <td contenteditable="true">Sneakers</td>
+                        <td contenteditable="true">White</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">On</td>
+                        <td contenteditable="true" class="model-name">Cloudtilt</td>
+                        <td contenteditable="true" class="price">₱9,000</td>
+                        <td contenteditable="true">Sneakers</td>
+                        <td contenteditable="true">Black to Gradient White</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Haruta</td>
+                        <td contenteditable="true" class="model-name">Loafers with Tassel</td>
+                        <td contenteditable="true" class="price">₱6,000</td>
+                        <td contenteditable="true">Loafers</td>
+                        <td contenteditable="true">Brown</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Perfume Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Perfume Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('perfume-table', 'Perfume')" class="btn">Add New Item</button>
+            </div>
+            <table id="perfume-table">
+                <thead>
+                    <tr>
+                        <th>Brand Name</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>Scent Family (e.g., Floral, Woody)</th>
+                        <th>Volume</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">Le Labo</td>
+                        <td contenteditable="true" class="model-name">Thé Matcha 26</td>
+                        <td contenteditable="true" class="price">₱17,000 (Japan)</td>
+                        <td contenteditable="true">Woody, Fruity, Citrus</td>
+                        <td contenteditable="true">50ml, 100ml</td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Louis Vuitton</td>
+                        <td contenteditable="true" class="model-name">Symphony</td>
+                        <td contenteditable="true" class="price">₱35,000</td>
+                        <td contenteditable="true">Citrus, Aromatic</td>
+                        <td contenteditable="true">100ml, 200ml</td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Book Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Book Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('book-table', 'Book')" class="btn">Add New Item</button>
+            </div>
+            <table id="book-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Price</th>
+                        <th>Genre</th>
+                        <th>Publication Year</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true" class="model-name">In Search of Lost Time</td>
+                        <td contenteditable="true">Marcel Proust</td>
+                        <td contenteditable="true" class="price"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" class="model-name">One Hundred Years of Solitude</td>
+                        <td contenteditable="true">Gabriel García Márquez</td>
+                        <td contenteditable="true" class="price"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Activities Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Activities Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('activities-table', 'Activity')" class="btn">Add New Item</button>
+            </div>
+            <table id="activities-table">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Location</th>
+                        <th>Notes</th>
+                        <th>Ideal Season</th>
+                        <th>Estimated Cost</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true" class="model-name">Firing Range</td>
+                        <td contenteditable="true">Makati Cinema Square</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true" class="price"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" class="model-name">Bouldering</td>
+                        <td contenteditable="true">Circuit Makati</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true" class="price"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" class="model-name">Skydiving</td>
+                        <td contenteditable="true">Siquijor</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true">Dry Season</td>
+                        <td contenteditable="true" class="price"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" class="model-name">Golfing</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true" class="price"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Electronics Wishlist -->
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-4">Electronics Wishlist</h2>
+            <div class="action-buttons">
+                <button onclick="addNewRow('electronics-table', 'Electronics')" class="btn">Add New Item</button>
+            </div>
+            <table id="electronics-table">
+                <thead>
+                    <tr>
+                        <th>Brand Name</th>
+                        <th>Model</th>
+                        <th>Price</th>
+                        <th>Type</th>
+                        <th>Notes</th>
+                        <th>Interest Level</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true">Apple</td>
+                        <td contenteditable="true" class="model-name">iPhone 17</td>
+                        <td contenteditable="true" class="price">₱54,000</td>
+                        <td contenteditable="true">Smartphone</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Lenovo</td>
+                        <td contenteditable="true" class="model-name">Legion Pro 5 2025</td>
+                        <td contenteditable="true" class="price">₱173,000</td>
+                        <td contenteditable="true">Laptop</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High" selected>High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true">Nintendo</td>
+                        <td contenteditable="true" class="model-name">Switch</td>
+                        <td contenteditable="true" class="price">₱35,000</td>
+                        <td contenteditable="true">Gaming Console</td>
+                        <td contenteditable="true"></td>
+                        <td>
+                            <select class="interest-select">
+                                <option value="Low">Low</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Function to parse a price string into a number
+        function parsePrice(priceString) {
+            // Handle cases where price might be empty or non-numeric
+            if (!priceString) return 0;
+            // Remove currency symbols, commas, and any text in parentheses (like "(Japan)")
+            const cleanString = priceString.replace(/[₱,()]/g, '').replace(/\s*\(.*\)\s*/, '').trim();
+            const parsed = parseFloat(cleanString);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        // Function to format a number into currency string
+        function formatCurrency(amount) {
+            return `₱${amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        // Function to calculate total for a specific table
+        function calculateTableTotal(tableId) {
+            let total = 0;
+            const table = document.getElementById(tableId);
+            if (table) {
+                // Select only editable price cells to ensure user-input prices are captured
+                const priceCells = table.querySelectorAll('td.price');
+                priceCells.forEach(cell => {
+                    total += parsePrice(cell.textContent);
+                });
+            }
+            return total;
+        }
+
+        // Function to update all totals in the main menu
+        function updateAllTotals() {
+            const totalPants = calculateTableTotal('pants-table');
+            const totalUpperWear = calculateTableTotal('upper-wear-table');
+            const totalShoes = calculateTableTotal('shoes-table');
+            const totalPerfume = calculateTableTotal('perfume-table');
+            const totalElectronics = calculateTableTotal('electronics-table');
+            // Activities and Books currently have no prices, so they default to 0.
+
+            const grandTotal = totalPants + totalUpperWear + totalShoes + totalPerfume + totalElectronics;
+
+            document.getElementById('total-pants').textContent = formatCurrency(totalPants);
+            document.getElementById('total-upper-wear').textContent = formatCurrency(totalUpperWear);
+            document.getElementById('total-shoes').textContent = formatCurrency(totalShoes);
+            document.getElementById('total-perfume').textContent = formatCurrency(totalPerfume);
+            document.getElementById('total-electronics').textContent = formatCurrency(totalElectronics);
+            document.getElementById('grand-total').textContent = formatCurrency(grandTotal);
+        }
+
+        // Function to add a new row to a specified table
+        function addNewRow(tableId, categoryName) {
+            const tableBody = document.getElementById(tableId).querySelector('tbody');
+            if (!tableBody) {
+                console.error(`Table body not found for ID: ${tableId}`);
+                return;
+            }
+
+            // Create a new row
+            const newRow = document.createElement('tr');
+            const headerCells = document.getElementById(tableId).querySelector('thead tr').children;
+
+            // Populate new row with empty, contenteditable cells, and the interest selector
+            for (let i = 0; i < headerCells.length; i++) {
+                const newCell = document.createElement('td');
+                if (headerCells[i].textContent.includes('Interest Level')) {
+                    const select = document.createElement('select');
+                    select.className = 'interest-select';
+                    select.innerHTML = `
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    `;
+                    newCell.appendChild(select);
+                    // Add event listener to update totals when interest changes (optional, for future features)
+                    select.addEventListener('change', updateAllTotals);
+                } else {
+                    newCell.contentEditable = 'true'; // Make new cells editable
+                    // Add specific class for price column to enable auto-calculation
+                    if (headerCells[i].textContent.includes('Price') || headerCells[i].textContent.includes('Estimated Cost')) {
+                        newCell.classList.add('price');
+                    }
+                    newCell.textContent = ''; // Empty content
+                }
+                newRow.appendChild(newCell);
+            }
+
+            tableBody.appendChild(newRow);
+            // Add event listener to each new editable cell to recalculate totals on input
+            newRow.querySelectorAll('[contenteditable="true"]').forEach(cell => {
+                cell.addEventListener('input', updateAllTotals);
+            });
+            updateAllTotals(); // Update totals after adding a new row
+        }
+
+        // Function to add a new column to a specified table
+        function addNewColumn() {
+            const tableId = document.getElementById('column-table-id').value;
+            const newColumnName = document.getElementById('new-column-name').value;
+
+            if (!tableId || !newColumnName) {
+                alert('Please provide both a Table ID and a new Column Name.');
+                return;
+            }
+
+            const table = document.getElementById(tableId);
+            if (!table) {
+                alert(`Table with ID "${tableId}" not found. Please use a valid ID (e.g., pants-table).`);
+                return;
+            }
+
+            const tableHeadRow = table.querySelector('thead tr');
+            const tableBodyRows = table.querySelectorAll('tbody tr');
+
+            if (!tableHeadRow || tableBodyRows.length === 0) {
+                alert('Table is empty or malformed. Cannot add column.');
+                return;
+            }
+
+            // Find the "Interest Level" header to insert before it
+            let interestLevelHeaderIndex = -1;
+            for (let i = 0; i < tableHeadRow.children.length; i++) {
+                if (tableHeadRow.children[i].textContent.includes('Interest Level')) {
+                    interestLevelHeaderIndex = i;
+                    break;
+                }
+            }
+
+            // Add new header
+            const newTh = document.createElement('th');
+            newTh.textContent = newColumnName;
+            if (interestLevelHeaderIndex !== -1) {
+                tableHeadRow.insertBefore(newTh, tableHeadRow.children[interestLevelHeaderIndex]);
+            } else {
+                tableHeadRow.appendChild(newTh); // Fallback if "Interest Level" not found
+            }
+
+
+            // Add new cell to each row in the body
+            tableBodyRows.forEach(row => {
+                const newTd = document.createElement('td');
+                newTd.contentEditable = 'true'; // Make new cells editable
+                newTd.textContent = ''; // Empty content
+                if (interestLevelHeaderIndex !== -1) {
+                    row.insertBefore(newTd, row.children[interestLevelHeaderIndex]);
+                } else {
+                    row.appendChild(newTd); // Fallback if "Interest Level" not found
+                }
+                 // If the new column is intended to hold prices, add the 'price' class and update listener
+                if (newColumnName.toLowerCase().includes('price') || newColumnName.toLowerCase().includes('cost')) {
+                    newTd.classList.add('price');
+                    newTd.addEventListener('input', updateAllTotals);
+                }
+            });
+
+            // Clear input fields after adding column
+            document.getElementById('column-table-id').value = '';
+            document.getElementById('new-column-name').value = '';
+
+            updateAllTotals(); // Recalculate totals as prices might be added
+        }
+
+
+        // Make existing cells contenteditable and add event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const tables = document.querySelectorAll('table');
+            tables.forEach(table => {
+                const priceCells = table.querySelectorAll('td.price');
+                priceCells.forEach(cell => {
+                    cell.contentEditable = 'true';
+                    cell.addEventListener('input', updateAllTotals); // Update total on input change
+                });
+                const editableCells = table.querySelectorAll('td:not(.price):not(:has(select))'); // Select all cells except price and select, for making them editable
+                 editableCells.forEach(cell => {
+                    cell.contentEditable = 'true';
+                });
+            });
+            updateAllTotals(); // Initial calculation
+        });
+
+    </script>
+</body>
+</html>
